@@ -1,48 +1,23 @@
 const functions = require("firebase-functions");
-
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
-
-const cors = require("cors")({origin: true});
-// const cheerio = require("cheerio");
+const cors = require("cors")({ origin: true });
 const puppeteer = require('puppeteer');
-const fetch = require("node-fetch");
-
-// const getHTML = async (url) => {
-//     const res = await fetch(url);
-//     const html = await res.text();
-//     return html;
-// }
 
 const scrapeCNN = async () => {
-    const browser = await puppeteer.launch( { headless: true });
+
+    //open browser and navigate to page
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto("https://us.cnn.com/");
-    
-    // const html = await getHTML("https://us.cnn.com/");
-    // const $ = cheerio.load(html);
+    await page.waitForSelector('.cd__headline-text');
 
-    const headlines = await page.$$eval('.cd__headline-text', (el) => {
-        return el.map((i, el) => {
-            return el.textContent;
-        });
+    //scrape page
+    const headlines = await page.$$eval('.cd__headline-text', (els) => {
+        els = els.map(el => el.textContent);
+        return els;
     });
 
-    // const articles = [];
-
-    // $(".cd__headline-text").each((i, el) => {
-    //     articles.push({
-    //         title: $(el).text(),
-    //         link: $(el).parent().attr("href")
-    //     });
-
-    //     if (articles.length === 10) return false;
-    // });
+    //cleanup and return
+    await browser.close();
 
     return Promise.all(headlines);
 }
