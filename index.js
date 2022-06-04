@@ -29,17 +29,19 @@ const scrapeCNN = async () => {
     await page.waitForSelector('.cd__headline-text');
 
     //scrape page
-    const headlines = await page.$$eval('.cd__headline-text', (els) => {
-        return els.map(el => {
+    const headlines = await page.$$eval('.cd__headline-text', async (els) => {
+        const data = await els.map(el => {
             const obj = { 'title': el.innerText, 'link': el.parentElement.href };
             return obj;
         });
+
+        return data;
     });
 
     //cleanup and return
     await browser.close();
 
-    return Promise.all(headlines);
+    return headlines;
 }
 
 app.get('/scrape/CNN', async (req, res) => {
