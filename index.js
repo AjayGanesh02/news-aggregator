@@ -1,4 +1,4 @@
-const PORT = 8000;
+const PORT = process.env.PORT || 8080;
 
 const puppeteer = require('puppeteer');
 const express = require('express');
@@ -7,6 +7,18 @@ const path = require('path');
 
 const app = express();
 app.use(cors());
+app.listen(PORT, () => console.log(`server listening on port ${PORT}`));
+
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname, '/index.html'));
+});
+
+app.get('/scrape', async (req, res) => {
+    data = [];
+    const CNNres = await scrapeCNN();
+    data = data.concat(CNNres);
+    res.send(data);
+});
 
 const scrapeCNN = async () => {
 
@@ -30,20 +42,7 @@ const scrapeCNN = async () => {
     return Promise.all(headlines);
 }
 
-app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, '/index.html'));
-});
-
 app.get('/scrape/CNN', async (req, res) => {
     const data = await scrapeCNN();
     res.send(data);
 })
-
-app.get('/scrape', async (req, res) => {
-    data = [];
-    const CNNres = await scrapeCNN();
-    data = data.concat(CNNres);
-    res.send(data);
-});
-
-app.listen(PORT, () => console.log(`server running on port ${PORT}`));
