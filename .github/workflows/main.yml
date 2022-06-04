@@ -19,6 +19,9 @@ jobs:
       run:
         working-directory: ./
     steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v2
+      
     - id: 'auth'
       uses: 'google-github-actions/auth@v0'
       with:
