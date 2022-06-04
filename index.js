@@ -29,8 +29,8 @@ const scrapeCNN = async () => {
     await page.waitForSelector('.cd__headline-text');
 
     //scrape page
-    const headlines = await page.$$eval('.cd__headline-text', async (els) => {
-        const data = await els.map(el => {
+    const headlines = await page.$$eval('.cd__headline-text', (els) => {
+        const data = els.map(el => {
             const obj = { 'title': el.innerText, 'link': el.parentElement.href };
             return obj;
         });
