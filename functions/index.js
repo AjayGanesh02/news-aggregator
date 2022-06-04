@@ -12,8 +12,10 @@ const scrapeCNN = async () => {
 
     //scrape page
     const headlines = await page.$$eval('.cd__headline-text', (els) => {
-        els = els.map(el => el.textContent);
-        return els;
+        return els.map(el => {
+            const obj = {'title': el.innerText, 'link': el.parentElement.href};
+            return obj;
+        });
     });
 
     //cleanup and return
