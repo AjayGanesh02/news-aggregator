@@ -1,5 +1,0 @@
-# [START app_yaml]
-runtime: nodejs16
-
-instance_class: F4
-# [END app_yaml]
