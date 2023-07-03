@@ -13,7 +13,13 @@ class CNNSpider(scrapy.Spider):
             yield response.follow(article, callback=self.parse_article)
     
     def parse_article(self, response):
+        desc_parts = []
+        for paragraph in response.css("p *::text").getall():
+            desc_parts.append(paragraph.strip())
         yield {
-            "text": "test"
+            "title": response.css("h1::text").get().strip(),
+            "description": " ".join(desc_parts),
+            "source": "CNN",
+            "url": response.url
         }
 
